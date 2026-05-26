@@ -1,0 +1,35 @@
+# N225BrokerBridge-runtime — 動かす知識リポ用 .gitignore
+#
+# このリポにはコード本体は含まれません。
+# Claude Code 命令書 + セットアップ手順 + 設定テンプレートのみ。
+
+# === Secrets / 個人情報 ===
+*.Local.json
+appsettings.Local.json
+*.pfx
+*.p12
+*.key
+secrets.json
+.env
+.env.local
+
+# === ログ ===
+logs/
+*.log
+
+# === IDE / OS ===
+.vs/
+.vscode/settings.json
+*.suo
+*.user
+Thumbs.db
+.DS_Store
+
+# === Python キャッシュ ===
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# === Git ===
+.git/
