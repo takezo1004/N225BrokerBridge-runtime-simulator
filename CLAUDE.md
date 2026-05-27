@@ -1,9 +1,30 @@
-# N225BrokerBridge — Claude Code 用プロジェクトガイド
+# N225BrokerBridge — Claude Code 用プロジェクトガイド (runtime リポ)
 
-このファイルは、本プロジェクト (N225BrokerBridge) を新しい PC でセットアップ・稼働させる際に、**Claude Code が最初に読み込むガイド**です。
+このファイルは、N225BrokerBridge を新しい PC でセットアップ・稼働させる際に、**Claude Code が最初に読み込むガイド**です。
+**runtime リポ** (動かす知識) と **public リポ** (コード本体) の 2 リポ構造を前提としています。
 
-> ⚠️ **このファイルは購読者の Claude Code 向け命令書のドラフト (v0.1.0) です**
-> 本格運用前にテスター環境で動作確認が必要です。
+> ⚠️ **ドラフト (v0.2.0)。テスター環境での動作確認が必要です。**
+
+---
+
+## 0. 2 リポ配置の前提
+
+このリポジトリは「runtime (動かす知識)」専用です。コード本体は別リポ `N225BrokerBridge-public` にあります。両方を同じ親フォルダに clone してください:
+
+```
+C:\Users\<your-name>\
+├── N225BrokerBridge-public\     ← コード本体 (.NET 8 / WPF / dashboard / analysis)
+└── N225BrokerBridge-runtime\    ← このリポ (CLAUDE.md + コマンド + テンプレ)
+```
+
+Claude Code は **runtime リポ** で起動してください:
+
+```
+cd N225BrokerBridge-runtime
+claude
+```
+
+`/setup` または `/install` 実行時、Claude Code は隣接の `..\N225BrokerBridge-public\bridge\N225BrokerBridge.sln` を探しにいきます。
 
 ---
 
@@ -26,6 +47,16 @@ kabu Station (証券口座、 localhost:18080)
 ```
 
 TradingView で設計した戦略のアラートが発火すると、Webhook 経由で本ブリッジに通知され、自動で kabu 証券口座に発注されます。
+
+### シミュレータモードで先に体験できる (重要)
+
+本番環境 (kabu Station + TV Pro+ + Cloudflare) を揃えていなくても、`--simulator` 起動で Webhook 受信〜発注〜約定〜建玉計上の全フローを Mock ブローカー上で体験できます。
+
+```
+N225BrokerBridge.UI.exe --simulator
+```
+
+詳細: `..\N225BrokerBridge-public\bridge\docs\simulator-mode.md` (購読者の Claude Code から自動参照される)。
 
 ### 主要技術スタック
 
@@ -150,11 +181,12 @@ Claude Code 起動後、以下のコマンドが使えます (各コマンドの
 | コマンド | 用途 | 利用シーン |
 |---|---|---|
 | `/setup` | **全自動セットアップ** (環境構築 → kabu → TV → Cloudflare → 動作確認) | 初回 |
-| `/install` | 環境構築のみ (.NET SDK 確認、ソフトウェアインストール) | 初回 or 環境変更時 |
+| `/install` | 環境構築のみ (.NET SDK 確認、Bridge ビルド、シミュレータで動作確認まで) | 初回 or 環境変更時 |
 | `/verify` | 動作確認 (テスト POST、ログ確認) | セットアップ後 |
 | `/diagnose` | トラブル時の自動診断 (ポート / プロセス / ログ確認) | 動かない時 |
+| `/analyze` | 朝の市場分析 (要 TradingView MCP) | 毎営業日朝 |
 
-最初は **`/setup`** から始めてください。
+**初回は `/setup` から、または `/install` だけでも OK** (シミュレータで動作確認まではこれ 1 つで完結する)。
 
 ---
 
@@ -292,9 +324,9 @@ Message (JSON):
 
 ### 9-3. バージョン
 
-- バージョン: **0.1.0** (初版ドラフト)
+- バージョン: **0.2.0** (2 リポ構造 + シミュレータ対応)
 - 作成日: 2026-05-21
-- 最終更新: 2026-05-21
+- 最終更新: 2026-05-27 (2 リポ前提を §0 に明文化、シミュレータ起動を §1 に追記、`/install` を更新)
 
 ---
 
