@@ -1,30 +1,40 @@
-# N225BrokerBridge — Claude Code 用プロジェクトガイド (runtime リポ)
+# N225BrokerBridge — Claude Code 用プロジェクトガイド (runtime-simulator リポ)
 
-このファイルは、N225BrokerBridge を新しい PC でセットアップ・稼働させる際に、**Claude Code が最初に読み込むガイド**です。
-**runtime リポ** (動かす知識) と **public リポ** (コード本体) の 2 リポ構造を前提としています。
+このファイルは、N225BrokerBridge をシミュレータモードで動かす際に、**購読者の Claude Code が最初に読み込むガイド**です。3 リポ構造 (Public bridge + Public simulator runtime + Private production runtime) を前提としています。
 
-> ⚠️ **ドラフト (v0.2.0)。テスター環境での動作確認が必要です。**
+> ⚠️ **ドラフト v0.3.0 (2026-05-27 更新)。3 リポ + ハイブリッド構造に対応。テスター環境での動作確認が必要です。**
 
 ---
 
-## 0. 2 リポ配置の前提
+## 0. 3 リポ配置の前提
 
-このリポジトリは「runtime (動かす知識)」専用です。コード本体は別リポ `N225BrokerBridge-public` にあります。両方を同じ親フォルダに clone してください:
+本リポジトリ (`N225BrokerBridge-runtime-simulator`) は Public 公開です。`N225BrokerBridge-public` (Bridge コード本体、Public) の中に `runtime/simulator/` サブフォルダとして配置します。
 
 ```
 C:\Users\<your-name>\
-├── N225BrokerBridge-public\     ← コード本体 (.NET 8 / WPF / dashboard / analysis)
-└── N225BrokerBridge-runtime\    ← このリポ (CLAUDE.md + コマンド + テンプレ)
+└── N225BrokerBridge-public\          ← Public bridge を clone (1 回だけ)
+    ├── bridge\                        ← Bridge コード本体
+    └── runtime\
+        └── simulator\                 ← このリポを clone してここに展開
+            ├── CLAUDE.md (本ファイル)
+            ├── .claude\commands\install.md (Phase 1-6 手順書)
+            ├── dashboard\
+            └── webhook_test\
 ```
 
-Claude Code は **runtime リポ** で起動してください:
+クローン手順 (両方 Public、認証不要):
 
-```
-cd N225BrokerBridge-runtime
-claude
+```powershell
+cd C:\Users\<your-name>\
+git clone https://github.com/takezo1004/N225BrokerBridge-public.git
+cd N225BrokerBridge-public\
+mkdir runtime
+git clone https://github.com/takezo1004/N225BrokerBridge-runtime-simulator.git runtime\simulator
 ```
 
-`/setup` または `/install` 実行時、Claude Code は隣接の `..\N225BrokerBridge-public\bridge\N225BrokerBridge.sln` を探しにいきます。
+Claude Code は `N225BrokerBridge-public` をワーキングフォルダとして起動してください。`/install` 実行時、本リポ内の `runtime/simulator/.claude/commands/install.md` (Phase 1-6) を参照して環境構築を進めます。
+
+本番接続装備 (`N225BrokerBridge-runtime-production`、Private) は第 3 話購入時に著者から GitHub 招待で解放され、`runtime/production/` サブフォルダに配置します。本リポでは扱いません。
 
 ---
 
@@ -50,7 +60,7 @@ TradingView で設計した戦略のアラートが発火すると、Webhook 経
 
 ### シミュレータモードで先に体験できる (重要)
 
-本番環境 (kabu Station + TV Pro+ + Cloudflare) を揃えていなくても、`--simulator` 起動で Webhook 受信〜発注〜約定〜建玉計上の全フローを Mock ブローカー上で体験できます。
+本番環境 (kabu Station + TradingView Plus + OSE データ + Cloudflare) を揃えていなくても、`--simulator` 起動で Webhook 受信〜発注〜約定〜建玉計上の全フローを Mock ブローカー上で体験できます。
 
 ```
 N225BrokerBridge.UI.exe --simulator
@@ -75,7 +85,7 @@ N225BrokerBridge.UI.exe --simulator
 | **OS** | Windows 10 1809+ / Windows 11 (x64) |
 | **トレード経験** | 個人投資家、株式・先物の基礎知識あり |
 | **技術スキル** | Windows PC を使いこなせる。プログラミング知識は不要 (Claude Code が補完) |
-| **必要なアカウント** | auカブコム証券 (kabu Station)、TradingView、Cloudflare、GitHub |
+| **必要なアカウント** | (シミュレータのみ) Claude Code Pro/Max。本番運用は別途 auカブコム証券 / TradingView Plus + OSE / Cloudflare / 独自ドメイン。GitHub アカウントは Public clone には不要 (第 3 話 production runtime 招待時に必要) |
 
 ---
 
@@ -324,9 +334,9 @@ Message (JSON):
 
 ### 9-3. バージョン
 
-- バージョン: **0.2.0** (2 リポ構造 + シミュレータ対応)
+- バージョン: **0.3.0** (3 リポ + ハイブリッド構造、simulator Public 化対応)
 - 作成日: 2026-05-21
-- 最終更新: 2026-05-27 (2 リポ前提を §0 に明文化、シミュレータ起動を §1 に追記、`/install` を更新)
+- 最終更新: 2026-05-27 (3 リポ + ハイブリッド構造に書き直し、Public 化反映、`/install` Phase 1-6 整備済)
 
 ---
 
