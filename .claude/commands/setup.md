@@ -54,7 +54,7 @@ Claude Code 発話:
 ```
 案内: https://dotnet.microsoft.com/download/dotnet/8.0
 → "x64 installer" をダウンロード → 実行
-→ インストール後、新しい PowerShell で `dotnet --version` で確認
+→ インストール後、PATH 反映のため Claude Desktop アプリを完全に終了して起動し直し、新しいチャットで `dotnet --version` を再確認 (ターミナルは開かせない → 動作原則 §3-6)
 ```
 
 #### kabu Station
